@@ -28,6 +28,10 @@ router.get('/login', function(req, res) {
 	res.render('login');
 });
 
+router.get('/signup', function(req, res) {
+	res.render('register');
+});
+
 router.post('/login', function(req, res) {
 	var email = req.body.email;
 	var password = req.body.password;
