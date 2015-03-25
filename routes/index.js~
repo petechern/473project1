@@ -57,26 +57,8 @@ router.post('/propose', function(req, res) {
 	else {
 		var proposal = req.body.proposal;
 		appdata["proposal"].push({"author": currentuser.firstName + " " + currentuser.lastName, "email": currentuser.email,  "content": proposal, "upvote": [], "downvote": [], "status": "pending"});
-	//code out line from the npm node-twitter api
-	var Twitter = require('twitter');
-	//pass in the function to tweetus to tweet later
-	var tweetus = proposal ;//value to pass in
-	var client = new Twitter({
-	    consumer_key: 'BWwrpygcZUADDrDdn1YnQuYKn',
-	    consumer_secret: 'wL6R7pndeL5INdBpCd64wJYWfS35pWrsZ8vsgUgGafGtWCRd7Q',
-	    access_token_key: '3074282449-rCa2tBbzAyzezcMju8ZWPV9hhHvo0b1sZ9jOz1S',
-	    access_token_secret: 'rYQHXRDh1OolSsSimzJY2qHJedsrNsQzqG82uxIRuq7uc'
-	});
 
-	// send the tweets , back end not showing on the page.
-	client.post('statuses/update', {status:tweetus }, function(error, tweet, response){
-	    if (!error) {
-		console.log(tweet);
-	    }
-	});
-	
-
-	res.redirect('/vote');
+		res.redirect('/vote');
 	}
 });
 
