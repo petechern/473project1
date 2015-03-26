@@ -32,6 +32,16 @@ router.get('/signup', function(req, res) {
 	res.render('register');
 });
 
+router.post('/signup', function(req,res) {
+	var first = req.body.firstname;
+	var last = req.body.lastname;
+	var email = req.body.Email;
+	var password = req.body.password;
+	appdata['users'].push({'firstname' : first, 'lastname' : last, 'email' : email, 'password' : password});
+
+	res.redirect('/login');
+});
+
 router.post('/login', function(req, res) {
 	var email = req.body.email;
 	var password = req.body.password;
