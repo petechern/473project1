@@ -127,6 +127,18 @@ router.post('/propose', function(req, res) {
 	}
 });
 
+
+router.get('/vote', function(req, res) {
+	if(currentuser === null) {
+		res.redirect('/login');
+	}
+	else {
+		var proposal = appdata.proposal;
+
+		res.render('vote.ejs', {"proposal": proposal, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers} );
+	}
+});
+
 router.post('/vote', function(req, res) {
 	if(currentuser === null) {
 		res.redirect('/login');
@@ -155,16 +167,7 @@ router.post('/vote', function(req, res) {
 	}
 });
 
-router.post('/vote', function(req, res) {
-	if(currentuser === null) {
-		res.redirect('/login');
-	}
-	else {
-		var proposal = appdata.proposal;
 
-		res.render('vote.ejs', {"proposal": proposal, "currentuser": currentuser} );
-	}
-});
 
 router.get('/logout', function(req, res) {
 	currentuser = null;
