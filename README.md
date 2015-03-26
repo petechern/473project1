@@ -3,8 +3,23 @@
 Section 1, Team 3 - “Inestimable Circularity” Chern, Pete Ming Gomez, Alberto Hackemack, Robert Derrick Sok, Kourun Yadav, Vivek
 
 /* Instruction on setting up
+running server @ 104.236.131.175:3000
+tweeting to   #   https://twitter.com/cpsc473_yolo
 
-*/
+nodejs app.js
+
+/******Working******\
+#
+# Voting mechanism
+# sign up
+# tweets
+# sign out
+# set up sample database class
+#
+/******Need to be done******\
+# get sign up working
+# get the user register with twitter so they could have different group
+# edit existing unpublished updates
 
 Build a community-based Twitter gateway, allowing groups of users to post to Twitter as a group.
 Individual users can submit updates, but they will not be posted to Twitter until other members of the group agree that they should be published. Users can submit new updates, edit existing unpublished updates, or vote existing unpublished updates up or down. When an update reaches a given number of votes, it will be published.
