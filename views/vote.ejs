@@ -11,19 +11,41 @@
 
       <div class="well well-lg col-lg-10 col-lg-offset-1">
         <legend>Vote</legend>
+        Required Votes: <%= requiredVotes %><br>
+        <br>
+        <form id="vote" method="post" action="/vote">
+          <input type="hidden" name="index" value="">
+          <input type="hidden" name="vote" value="">
+        </form>
         <table class="table table-hover">
           <tr>
             <th>Author</th><th>Proposal</th><th><span class="glyphicon glyphicon-thumbs-up"></span></th><th><span class="glyphicon glyphicon-thumbs-down"></span></th><th>Action</th>
           </tr>
-          <% proposal.forEach(function(item) { %>
+          <% 
+            var i = 0;
+            proposal.forEach(function(item) { 
+          %>
             <tr>
-              <td><%= item.author %></td><td><%= item.content %></td><td><%= item.upvote.length %></td><td><%= item.upvote.length %></td>
+              <%
+                var haveVoted = false;
+                if(item.upvote.indexOf(currentuser.email) >= 0 || item.downvote.indexOf(currentuser.email) >= 0) {
+                  haveVoted = true;
+                }
+              %>
+
+
+              <td><%= item.author %></td><td><%= item.content %></td><td><%= item.upvote.length %></td><td><%= item.downvote.length %></td>
 
               <% if(item.email === currentuser.email) { %>
                 <td>You are the author.</td>
+              <% } else if(item.status === "Approved" || item.status === "Denied") { %>
+                <td><%= item.status %></td>
               <% } else { %>
-                <td><button class="btn btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Approve</button> <button class="btn btn-xs"><span class="glyphicon glyphicon-thumbs-down"></span> Disapprove</button></td>
-              <% } %>
+                <td><button class="btn btn-xs" data-index="<%= i %>" data-vote="up"><span class="glyphicon glyphicon-thumbs-up"></span> Approve</button> <button class="btn btn-xs" data-index="<%= i %>" data-vote="down"><span class="glyphicon glyphicon-thumbs-down"></span> Disapprove</button></td>
+              <% 
+                }
+                i++; 
+              %>
             </tr>
           <% }); %>
         </table>
@@ -32,5 +54,12 @@
     </div>
 
     <% include partials/footer.ejs %>
+    <script>
+      $("button").click(function() {
+        $("input[name='index']").val($(this).data('index'));
+        $("input[name='vote']").val($(this).data('vote'));
+        $("#vote").submit();
+      });
+    </script>
   </body>
 </html>
