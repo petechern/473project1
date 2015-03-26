@@ -1,5 +1,15 @@
 {
 	"users": [{
+		"firstName": "vivek",
+		"lastName": "yadav",
+		"email": "vivek.yadav@csu.fullerton.edu",
+		"password": "test"
+		},{
+		"firstName": "alverto",
+		"lastName": "gomez",
+		"email": "otrebla117@csu.fullerton.edu",
+		"password": "test"
+		},{
 		"firstName": "Pete",
 		"lastName": "Chern",
 		"email": "chernp@csu.fullerton.edu",
