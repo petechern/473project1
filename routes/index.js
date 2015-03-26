@@ -37,8 +37,9 @@ router.post('/signup', function(req,res) {
 	var last = req.body.lastname;
 	var email = req.body.Email;
 	var password = req.body.password;
-	appdata['users'].push({'firstname' : first, 'lastname' : last, 'email' : email, 'password' : password});
-
+	console.log(first);
+	appdata['users'].push({'firstname':first, 'lastname' : last, 'email' : email, 'password' : password});
+	console.log(appdata.users);
 	res.redirect('/login');
 });
 
