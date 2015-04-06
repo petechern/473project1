@@ -82,14 +82,16 @@ router.post('/signup', function(req,res) {
 	var email = req.body.email;
 	var password = req.body.password;
 	console.log(first);
+	console.log(last);
+	console.log(password);
 	
-	if(regauthenticate(email)){
+	if(regauthenticate(email)) {
 		console.log(email);
-		//appdata['users'].push({'firstname':first, 'lastname' : last, 'email' : email, 'password' : password});
-		//res.redirect('/login');
+		appdata["users"].push({"firstname": first, "lastname": last, "email": email, "password" : password});
+		res.redirect('/login');
 	}
-	else{
-//		res.render('signup',{"message": "please Enter a different Email"});
+	else {
+		res.render('signup',{"message": "please Enter a different Email"});
 	}
 });
 
