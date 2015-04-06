@@ -23,7 +23,7 @@ function authenticate(email, password) {
 	}
 }
 
-//authendicate for registeration
+//authenticate for registeration
 
 function regauthenticate(email) {
 	var users = appdata.users;
@@ -87,7 +87,7 @@ router.post('/signup', function(req,res) {
 	
 	if(regauthenticate(email)) {
 		console.log(email);
-		appdata["users"].push({"firstname": first, "lastname": last, "email": email, "password" : password});
+		appdata["users"].push({"firstName": first, "lastName": last, "email": email, "password" : password});
 		res.redirect('/login');
 	}
 	else {
