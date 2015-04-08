@@ -92,9 +92,9 @@ function tweet(tweet) {
 	});
 }
 
-// Index route to index page.
+// route to login since index do not have anything on there so when the user type in it reached into the login page
 router.get('/', function(req, res) {
-	res.render('index');
+	res.render('login');
 });
 
 // Route to the login page.
