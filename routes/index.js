@@ -93,17 +93,17 @@ function tweet(tweet) {
 
 // route to login since index do not have anything on there so when the user type in it reached into the login page
 router.get('/', function(req, res) {
-	res.render('login');
+	res.render('login', {"pagetitle": "Login"});
 });
 
 // Route to the login page.
 router.get('/login', function(req, res) {
-	res.render('login');
+	res.render('login', {"pagetitle": "Login"});
 });
 
 // Route to the signup page.
 router.get('/signup', function(req, res) {
-	res.render('signup');
+	res.render('signup', {"pagetitle": "Sign Up!"});
 });
 
 //registering new account function
@@ -116,11 +116,11 @@ router.post('/signup', function(req,res) {
 
 	var nameFormat = /^[A-Za-z]+$/;
 	if(first.length === 0 || last.length === 0 || password.length === 0) {
-		res.render('signup',{"message": "All values must be filled."});
+		res.render('signup',{"message": "All values must be filled.", "pagetitle": "Sign Up!"});
 	} else if(!first.match(nameFormat)) {
-		res.render('signup',{"message": "First Name must contain only letters."});
+		res.render('signup',{"message": "First Name must contain only letters.", "pagetitle": "Sign Up!"});
 	} else if(!first.match(nameFormat)) {
-		res.render('signup',{"message": "Last Name must contain only letters."});
+		res.render('signup',{"message": "Last Name must contain only letters.", "pagetitle": "Sign Up!"});
 	} else{
 		
 		if(regauthenticate(email)) {
@@ -132,7 +132,7 @@ router.post('/signup', function(req,res) {
 			requiredVotes = Math.ceil(totalUsers / 2);
 		}
 		else {
-			res.render('signup',{"message": "Email is invalid or already registered."});
+			res.render('signup',{"message": "Email is invalid or already registered.", "pagetitle": "Sign Up!"});
 		}
 	}
 });
@@ -149,7 +149,7 @@ router.post('/login', function(req, res) {
 	}
 	// Otherwise, display an error message.
 	else {
-		res.render('login', {"message": "Please try again."});
+		res.render('login', {"message": "Please try again.", "pagetitle": "Login"});
 	}
 });
 
@@ -162,7 +162,7 @@ router.get('/propose', function(req, res) {
 	// Otherwise, go on with the proposal.
 	else {
 		var proposal = appdata.proposal;
-		res.render('propose', {"proposal": proposal, "currentuser": currentuser});
+		res.render('propose', {"proposal": proposal, "currentuser": currentuser, "pagetitle": "Propose a Tweet"});
 	}
 });
 
@@ -182,7 +182,7 @@ router.post('/propose', function(req, res) {
 			// Redirect to the vote page.
 			res.redirect('/vote');
 		} else {
-			res.render('propose',{"message": "Please keep the tweet length between 1 and 140 characters."});
+			res.render('propose',{"message": "Please keep the tweet length between 1 and 140 characters.", "pagetitle": "Propose a Tweet"});
 		}
 	}
 });
@@ -197,7 +197,7 @@ router.get('/vote', function(req, res) {
 	else {
 		var proposal = appdata.proposal;
 
-		res.render('vote.ejs', {"proposal": proposal, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers} );
+		res.render('vote.ejs', {"proposal": proposal, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers, "pagetitle": "Vote"} );
 	}
 });
 
@@ -286,7 +286,7 @@ router.post('/vote', function(req, res) {
 		}
 		
 		// Refresh the proposal.
-		res.render('vote.ejs', {"proposal": proposals, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers} );
+		res.render('vote.ejs', {"proposal": proposals, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers, "pagetitle": "Vote"} );
 	}
 });
 
