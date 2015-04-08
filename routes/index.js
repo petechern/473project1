@@ -27,18 +27,29 @@ function authenticate(email, password) {
 
 function regauthenticate(email) {
 	var users = appdata.users;
-	var loginuser = users.filter(
-		function(user){ return user.email === email }
-	)[0];
+	
+	//regular expression taken from http://www.w3resource.com/javascript/form/email-validation.php
+	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	
+	//check if email is in the correct format.
+	if(email.match(mailformat)) {
 
-	if(loginuser === undefined) {
-		//if the email is correct return true
-		return true;
-	}
-	else {
-		//if the email exist return falst
-		currentuser = loginuser;
-		return false;
+		//check if email is already in use.
+		var loginuser = users.filter(
+			function(user){ return user.email === email }
+		)[0];
+
+		if(loginuser === undefined) {
+			//if the email is correct return true
+			return true;
+		}
+		else {
+			//if the email exist return falst
+			currentuser = loginuser;
+			return false;
+		}
+	} else {
+		return false;	//return false if email is not in correct format.
 	}
 }
 
@@ -76,17 +87,14 @@ router.get('/signup', function(req, res) {
 
 //
 router.post('/signup', function(req,res) {
-	console.log("first");
+
 	var first = req.body.firstname;
 	var last = req.body.lastname;
 	var email = req.body.email;
 	var password = req.body.password;
-	console.log(first);
-	console.log(last);
-	console.log(password);
+	
 	
 	if(regauthenticate(email)) {
-		console.log(email);
 		appdata["users"].push({"firstName": first, "lastName": last, "email": email, "password" : password});
 		res.redirect('/login');
 		
@@ -95,7 +103,7 @@ router.post('/signup', function(req,res) {
 		requiredVotes = Math.ceil(totalUsers / 2);
 	}
 	else {
-		res.render('signup',{"message": "please Enter a different Email"});
+		res.render('signup',{"message": "Email is invalid or already registered."});
 	}
 });
 
