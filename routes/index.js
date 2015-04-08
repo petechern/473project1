@@ -92,18 +92,27 @@ router.post('/signup', function(req,res) {
 	var last = req.body.lastname;
 	var email = req.body.email;
 	var password = req.body.password;
-	
-	
-	if(regauthenticate(email)) {
-		appdata["users"].push({"firstName": first, "lastName": last, "email": email, "password" : password});
-		res.redirect('/login');
+
+	var nameFormat = /^[A-Za-z]+$/;
+	if(first.length === 0 || last.length === 0 || password.length === 0) {
+		res.render('signup',{"message": "All values must be filled."});
+	} else if(!first.match(nameFormat)) {
+		res.render('signup',{"message": "First Name must contain only letters."});
+	} else if(!first.match(nameFormat)) {
+		res.render('signup',{"message": "Last Name must contain only letters."});
+	} else{
 		
-		//Update required votes.
-		totalUsers = appdata.users.length;
-		requiredVotes = Math.ceil(totalUsers / 2);
-	}
-	else {
-		res.render('signup',{"message": "Email is invalid or already registered."});
+		if(regauthenticate(email)) {
+			appdata["users"].push({"firstName": first, "lastName": last, "email": email, "password" : password});
+			res.redirect('/login');
+			
+			//Update required votes.
+			totalUsers = appdata.users.length;
+			requiredVotes = Math.ceil(totalUsers / 2);
+		}
+		else {
+			res.render('signup',{"message": "Email is invalid or already registered."});
+		}
 	}
 });
 
