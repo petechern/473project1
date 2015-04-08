@@ -1,6 +1,6 @@
 # 473project1
 
-#Section 1, Team 3 - “Inestimable Circularity” Chern, Pete Ming Gomez, Alberto Hackemack, Robert Derrick Sok, #Kourun Yadav, Vivek
+#Section 1, Team 3 - “Inestimable Circularity” Chern, Pete Ming Gomez, Alberto Hackemack, Robert Derrick Sok, Kourun Yadav, Vivek
 
 /* Instruction on setting up
 running server @ 104.236.131.175:3000
