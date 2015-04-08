@@ -16,7 +16,7 @@ nodejs app.js
 # sign out
 # set up sample database class
 # Sign up working
-#fixing Bugs and errors handlering logic
+#fixing Bugs and errors handle logic
 #/******ENDS******\
 
 
