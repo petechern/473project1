@@ -89,6 +89,10 @@ router.post('/signup', function(req,res) {
 		console.log(email);
 		appdata["users"].push({"firstName": first, "lastName": last, "email": email, "password" : password});
 		res.redirect('/login');
+		
+		//Update required votes.
+		totalUsers = appdata.users.length;
+		requiredVotes = Math.ceil(totalUsers / 2);
 	}
 	else {
 		res.render('signup',{"message": "please Enter a different Email"});
