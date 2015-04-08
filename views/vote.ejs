@@ -54,12 +54,6 @@
     </div>
 
     <% include partials/footer.ejs %>
-    <script>
-      $("button").click(function() {
-        $("input[name='index']").val($(this).data('index'));
-        $("input[name='vote']").val($(this).data('vote'));
-        $("#vote").submit();
-      });
-    </script>
+    <script src="/js/vote.js"></script>
   </body>
 </html>
