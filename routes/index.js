@@ -1,30 +1,47 @@
+// Use router from express.
 var express = require('express');
 var router = express.Router();
 
+// Use the data file to find user information.
 var appdata = require('../data.json');
+
+// Start without an active user.
 var currentuser = null;
+
+// Total number of users.
 var totalUsers = appdata.users.length;
+
+// Posts require half of the users to pass.
 var requiredVotes = Math.ceil(totalUsers / 2);
 
-
+// Authentication for logging in.
 function authenticate(email, password) {
+	// Grab the list of users and their information.
 	var users = appdata.users;
+	// Find the user who is logging in.
+
+
+	//NEEDED
+	//filter sample from mozilla filter id @ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 
 	var loginuser = users.filter(
-		function(user){ return user.email === email && user.password === password }
+		// If the user email and password both match, return true.
+		function(user){ 
+			return user.email === email && user.password === password 
+		}
 	)[0];
-
+	// If loginuser returns undefined, return false.
 	if(loginuser === undefined) {
 		return false;
 	}
+	// Otherwise, log the user in.
 	else {
 		currentuser = loginuser;
 		return true;
 	}
 }
 
-//authenticate for registeration
-
+// Authentication for registering a new user.
 function regauthenticate(email) {
 	var users = appdata.users;
 	
@@ -53,9 +70,13 @@ function regauthenticate(email) {
 	}
 }
 
+//tweets function taken from the npm-twitter page https://www.npmjs.com/package/twitter
+//inputting the 0auth from twitter website where we had to register for a developer account
 function tweet(tweet) {
+	// Using Twitter.
 	var Twitter = require('twitter');
-
+	
+	// Set up the Twitter account to be used.
 	var client = new Twitter({
 	    consumer_key: 'BWwrpygcZUADDrDdn1YnQuYKn',
 	    consumer_secret: 'wL6R7pndeL5INdBpCd64wJYWfS35pWrsZ8vsgUgGafGtWCRd7Q',
@@ -63,7 +84,7 @@ function tweet(tweet) {
 	    access_token_secret: 'rYQHXRDh1OolSsSimzJY2qHJedsrNsQzqG82uxIRuq7uc'
 	});
 
-	// send the tweets , back end not showing on the page.
+	// Send the tweet, back end not showing on the page.
 	client.post('statuses/update', {status:tweet }, function(error, tweet, response){
 	    if (!error) {
 		console.log(tweet);
@@ -71,21 +92,22 @@ function tweet(tweet) {
 	});
 }
 
-
+// Index route to index page.
 router.get('/', function(req, res) {
-	res.render('login');
+	res.render('index');
 });
 
+// Route to the login page.
 router.get('/login', function(req, res) {
 	res.render('login');
 });
 
-//route the sign up page
+// Route to the signup page.
 router.get('/signup', function(req, res) {
 	res.render('signup');
 });
 
-//
+//registering new account function
 router.post('/signup', function(req,res) {
 
 	var first = req.body.firstname;
@@ -116,45 +138,63 @@ router.post('/signup', function(req,res) {
 	}
 });
 
+// Logging in as an existing user.
 router.post('/login', function(req, res) {
+	// Take user email and password.
 	var email = req.body.email;
 	var password = req.body.password;
 
+	// If the email and password combination matches, log in.
 	if(authenticate(email, password)) {
 		res.redirect('/propose');
 	}
+	// Otherwise, display an error message.
 	else {
 		res.render('login', {"message": "Please try again."});
 	}
 });
 
+// Propose a new tweet to be made.
 router.get('/propose', function(req, res) {
+	// If no user is logged in, redirect to the login page.
 	if(currentuser === null) {
 		res.redirect('/login');
 	}
+	// Otherwise, go on with the proposal.
 	else {
 		var proposal = appdata.proposal;
 		res.render('propose', {"proposal": proposal, "currentuser": currentuser});
 	}
 });
 
+// Create appdata for the proposed tweet.
 router.post('/propose', function(req, res) {
+	// If no user is logged in, redirect to the login page.
 	if(currentuser === null) {
 		res.redirect('/login');
 	}
+	// Otherwise, add the proposal to the appdata page.
 	else {
 		var proposal = req.body.proposal;
-		appdata["proposal"].push({"author": currentuser.firstName + " " + currentuser.lastName, "email": currentuser.email,  "content": proposal, "upvote": [currentuser.email], "downvote": [], "status": "pending"});
-
-		res.redirect('/vote');
+		if(proposal != undefined && proposal.length <= 140 && proposal.length > 0){
+		
+			appdata["proposal"].push({"author": currentuser.firstName + " " + currentuser.lastName, "email": currentuser.email,  "content": proposal, "upvote": [currentuser.email], "downvote": [], "status": "pending"});
+	
+			// Redirect to the vote page.
+			res.redirect('/vote');
+		} else {
+			res.render('propose',{"message": "Please keep the tweet length between 1 and 140 characters."});
+		}
 	}
 });
 
-
+// Route to the vote page.
 router.get('/vote', function(req, res) {
+	// If no user is logged in, redirect to the login page.
 	if(currentuser === null) {
 		res.redirect('/login');
 	}
+	// Otherwise, show the proposed tweets.
 	else {
 		var proposal = appdata.proposal;
 
@@ -162,37 +202,99 @@ router.get('/vote', function(req, res) {
 	}
 });
 
+// Casting votes on the vote page.
 router.post('/vote', function(req, res) {
+	// If no user is logged in, redirect to the login page.
 	if(currentuser === null) {
 		res.redirect('/login');
 	}
+	// Otherwise, allow the user to vote.
 	else {
 		var index = parseInt(req.body.index);
 		var vote = req.body.vote;
 
 		var proposals = appdata.proposal;
-
-		if(vote === "up") {
-			proposals[index].upvote.push(currentuser.email);
-			if(proposals[index].upvote.length >= requiredVotes) {
-				proposals[index].status = "Approved";
-				tweet(proposals[index].content);
+		
+		// Variables to track whether or not the current user has
+		//   voted on a proposal and where their email is indexed.
+		var voteup = false;
+		var votedown = false;
+		var locup
+		var locdown
+		
+		// Check if the current user has upvoted the submission.
+		//   If they have, save the index of their email.
+		for(var up=0; up < proposals[index].upvote.length; up++){
+			if (proposals[index].upvote[up] == currentuser.email){
+				voteup = true;
+				locup = up;
 			}
 		}
+
+		// Check if the current user has downvoted the submission.
+		//   If they have, save the index of their email.
+		for(var down=0; down < proposals[index].downvote.length; down++){
+			if (proposals[index].downvote[down] == currentuser.email){
+				votedown = true;
+				locdown = down;
+			}
+		}
+
+		// If the user upvotes one of the proposals...
+		if(vote === "up") {
+			// If the user has not yet upvoted the post.
+			if(voteup != true){
+				// If the user has previously downvoted the proposal,
+				//   remove their name from the downvote list.
+				if(votedown == true){
+					proposals[index].downvote.splice(locdown,1);
+				}
+				// Increase the approval count
+				proposals[index].upvote.push(currentuser.email);
+				// If the approval count is greater than the required
+				//   votes, send the tweet.
+				if(proposals[index].upvote.length >= requiredVotes) {
+					proposals[index].status = "Approved";
+					tweet(proposals[index].content);
+				}
+			// If the user is clicking the upvote button again, remove
+			//   their name from the upvote list.
+			} else if(voteup == true){
+				proposals[index].upvote.splice(locup,1);
+			}
+		}
+		// If the user downvotes one of the proposals...
 		else if(vote === "down") {
-			proposals[index].downvote.push(currentuser.email);
-			if(proposals[index].downvote.length >= requiredVotes) {
-				proposals[index].status = "Denied";
+			// If the user has not yet downvoted the proposal.
+			if(votedown != true){
+				// If the user has upvoted the proposal, remove their
+				//   email from the upvote list.
+				if(voteup == true){
+					proposals[index].upvote.splice(locup,1);
+				}
+				// Increase the disapproval count.
+				proposals[index].downvote.push(currentuser.email);
+				// If the disapproval count is creater than the
+				//   required votes, deny the tweet.
+				if(proposals[index].downvote.length >= requiredVotes) {
+					proposals[index].status = "Denied";
+				}
+			// If the user is clicking the downvote button again, remove
+			//   their email from the downvote list.
+			} else if(votedown == true){
+				proposals[index].downvote.splice(locdown,1);
 			}
 		}
 		
+		// Refresh the proposal.
 		res.render('vote.ejs', {"proposal": proposals, "currentuser": currentuser, "requiredVotes": requiredVotes, "totalUsers": totalUsers} );
 	}
 });
 
 
-
+// Logout reroute.
 router.get('/logout', function(req, res) {
+	// Set current user to null and go to the login page.
 	currentuser = null;
 	res.redirect('/login');
 });
