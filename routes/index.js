@@ -21,9 +21,8 @@ function authenticate(email, password) {
 	// Find the user who is logging in.
 
 
-	//NEEDED
-	//filter sample from mozilla filter id @ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 
+	//filter sample from stackoverflow http://stackoverflow.com/questions/2722159/javascript-how-to-filter-object-array-based-on-attributes
 	var loginuser = users.filter(
 		// If the user email and password both match, return true.
 		function(user){ 
